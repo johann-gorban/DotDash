@@ -1,0 +1,11 @@
+{
+    "C_Cpp.errorSquiggles": "disabled",
+    "files.associations": {
+        "morse_codes.h": "c",
+        "alphabet.h": "c",
+        "app_setup.h": "c",
+        "telegraf-css.h": "c",
+        "telegraf-activation.h": "c",
+        "telegraf-alphabet.h": "c"
+    }
+}
