@@ -1,5 +1,6 @@
+.vscode
 bin
 makefile
-include/telegraf-css.h
-scr/telegraf-css
-css/style.css
+telegraf-css.h
+telegraf-css
+style.css
