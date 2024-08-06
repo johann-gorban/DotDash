@@ -1,4 +1,4 @@
-## Telegraf
+# Telegraf
 Morse. Simple. Light-weight. Made with GTK.
 
 ## Easy to use!
