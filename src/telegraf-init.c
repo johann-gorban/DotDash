@@ -54,7 +54,7 @@ activate_application (GtkApplication* app, gpointer user_data) {
 	TextOut = gtk_text_view_new ();
 
 	gtk_widget_set_margin_bottom (TextIn, 5);
-	gtk_widget_set_margin_bottom (TextOut, 3);
+	gtk_widget_set_margin_bottom (TextOut, 5);
 	
 	gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW(TextIn), GTK_WRAP_WORD_CHAR);
 	gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW(TextOut), GTK_WRAP_WORD_CHAR);
@@ -79,18 +79,24 @@ activate_application (GtkApplication* app, gpointer user_data) {
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(ScrollTextOut), TextOut);
 
 /*--------------------------BUTTON------------------------------------------------------*/
-	ButtonRead = gtk_button_new_with_label ("Read");
 	ButtonCopy = gtk_button_new_with_label ("Copy");
+	ButtonRead = gtk_button_new_with_label ("Read");
+
+	gtk_widget_set_margin_start (ButtonCopy, 5);
+	gtk_widget_set_margin_end (ButtonRead, 5);
+
+	gtk_widget_set_size_request(ButtonCopy, 120, 30);
+	gtk_widget_set_size_request(ButtonRead, 120, 30);
 
 	g_signal_connect (ButtonRead, "clicked", G_CALLBACK(translate_text), TextWidgets);
 /*--------------------------BOX-WITH-BUTTON---------------------------------------------*/
-	BoxButton = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	BoxButton = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 
 	gtk_widget_set_valign (BoxButton, GTK_ALIGN_CENTER);
 	gtk_widget_set_halign (BoxButton, GTK_ALIGN_CENTER);
 
-	gtk_box_append(GTK_BOX(BoxButton), ButtonRead);
-	gtk_box_append(GTK_BOX(BoxButton), ButtonCopy);
+	gtk_box_append (GTK_BOX(BoxButton), ButtonRead);
+	gtk_box_append (GTK_BOX(BoxButton), ButtonCopy);
 /*--------------------------BOX---------------------------------------------------------*/
 	Box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 
