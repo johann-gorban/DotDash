@@ -1,5 +1,5 @@
 # Telegraf
-Morse. Simple. Light-weight. Made with GTK.
+Morse. Simple. Light-weight. GTK.
 
 ## Easy to use!
 * Requirements: gtk-dev libraries and gcc.
