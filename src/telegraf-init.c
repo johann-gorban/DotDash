@@ -14,7 +14,7 @@ translate_to_code (const gchar *str1, gchar *str2){
 		} else if (str1[i] >= 'a' && str1[i] <= 'z'){
 			strcat (str2, MORSE_LETTERS[str1[i] - 'a']);
 		} else if (str1[i] == ' '){
-			strcat (str2, "/");
+			strcat (str2, " ");
 		} else strcat (str2, "?");
 		strcat (str2, " "); 
 	}
@@ -39,8 +39,8 @@ translate_text (GtkWidget *Widget, gpointer data) {
 void 
 activate_application (GtkApplication* app, gpointer user_data) {
 	GtkWidget *Window;
-	GtkWidget *Button;
-	GtkWidget *Box;
+	GtkWidget *ButtonRead, *ButtonCopy;
+	GtkWidget *Box, *BoxButton;
 	GtkWidget *TextIn, *TextOut;
 	GtkWidget *ScrollTextIn, *ScrollTextOut;
 	GtkTextView **TextWidgets = g_new (GtkTextView*, 2);
@@ -65,21 +65,34 @@ activate_application (GtkApplication* app, gpointer user_data) {
 	ScrollTextIn = gtk_scrolled_window_new ();
 	ScrollTextOut = gtk_scrolled_window_new ();
 
-	gtk_widget_set_size_request (ScrollTextIn, 0, 100);
+	load_css();
+	gtk_widget_add_css_class(ScrollTextIn, "WidgetRounded");
+	gtk_widget_add_css_class(ScrollTextOut, "WidgetRounded");
+
+	gtk_widget_set_size_request (ScrollTextIn, 250, 100); 
+	gtk_widget_set_size_request (ScrollTextOut, 250, 100);
+
+	gtk_widget_set_halign(ScrollTextIn, GTK_ALIGN_CENTER);
+	gtk_widget_set_halign(ScrollTextOut, GTK_ALIGN_CENTER);
 
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(ScrollTextIn), TextIn);
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(ScrollTextOut), TextOut);
-/*--------------------------BUTTON------------------------------------------------------*/
-	Button = gtk_button_new_with_label ("Read");
-	gtk_widget_set_margin_top (Button, 3);
 
-	g_signal_connect (Button, "clicked", G_CALLBACK(translate_text), TextWidgets);
+/*--------------------------BUTTON------------------------------------------------------*/
+	ButtonRead = gtk_button_new_with_label ("Read");
+	ButtonCopy = gtk_button_new_with_label ("Copy");
+
+	g_signal_connect (ButtonRead, "clicked", G_CALLBACK(translate_text), TextWidgets);
+/*--------------------------BOX-WITH-BUTTON---------------------------------------------*/
+	BoxButton = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+
+	gtk_widget_set_valign (BoxButton, GTK_ALIGN_CENTER);
+	gtk_widget_set_halign (BoxButton, GTK_ALIGN_CENTER);
+
+	gtk_box_append(GTK_BOX(BoxButton), ButtonRead);
+	gtk_box_append(GTK_BOX(BoxButton), ButtonCopy);
 /*--------------------------BOX---------------------------------------------------------*/
 	Box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-
-	gtk_box_set_homogeneous (GTK_BOX(Box), TRUE);
-
-	gtk_widget_set_size_request (Box, 300, 150);
 
 	gtk_widget_set_valign (Box, GTK_ALIGN_CENTER);
 	gtk_widget_set_halign (Box, GTK_ALIGN_CENTER);
@@ -88,7 +101,7 @@ activate_application (GtkApplication* app, gpointer user_data) {
 
 	gtk_box_append (GTK_BOX(Box), ScrollTextIn);
 	gtk_box_append (GTK_BOX(Box), ScrollTextOut);
-	gtk_box_append (GTK_BOX(Box), Button);
+	gtk_box_append (GTK_BOX(Box), BoxButton);
 /*--------------------------PRESENTATION-------------------------------------------------*/
 	gtk_window_present (GTK_WINDOW(Window));
 }

@@ -1,12 +1,14 @@
 #include "telegraf-css.h"
 
-gchar* 
+void
 load_css (){
 	GtkCssProvider *Provider;
 
 	Provider = gtk_css_provider_new ();
-	gtk_css_provider_load_from_path (Provider, "./css/style.css");
-	
-	gchar *css_class = gtk_css_provider_to_string (Provider);
-	return css_class;
+	gtk_css_provider_load_from_string (Provider, 
+					   ".WidgetRounded textview {border-radius: 10px;}");
+
+	gtk_style_context_add_provider_for_display (gdk_display_get_default(), 
+						    GTK_STYLE_PROVIDER(Provider),
+						    GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 }
