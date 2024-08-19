@@ -3,7 +3,7 @@
 #include "telegraf-css.h"
 
 void 
-translate_to_code (const gchar *str1, gchar *str2){
+text_translate (const gchar *str1, gchar *str2){
 	const gsize length = strlen (str1);
 	str2[0] = '\0';
 	for (size_t i = 0; i < length; i++) {
@@ -20,38 +20,75 @@ translate_to_code (const gchar *str1, gchar *str2){
 	}
 }
 
-void 
-translate_text (GtkWidget *Widget, gpointer data) {
-	GtkTextView **TextWidgets = (GtkTextView **) data;
-	GtkTextView *TextIn = TextWidgets[0];
-	GtkTextView *TextOut = TextWidgets[1];
-	GtkTextBuffer *Buffer = gtk_text_view_get_buffer (TextIn);
+const gchar*
+get_text (GtkTextView *TextWidget){
+	GtkTextBuffer *Buffer = gtk_text_view_get_buffer (TextWidget);
+
 	GtkTextIter start, end;
 	gtk_text_buffer_get_bounds (Buffer, &start, &end);
-	const gchar *text_src = gtk_text_buffer_get_text (Buffer, &start, &end, FALSE);
+
+	const gchar *text = gtk_text_buffer_get_text (Buffer, &start, &end, FALSE);
+	
+	return text;
+}
+
+void
+event_copy (GtkWidget *Widget, gpointer data) {
+	GdkDisplay *Display;
+	GdkClipboard *Clipboard;
+	GtkTextView *TextView;
+
+	Display = gdk_display_get_default ();
+
+	Clipboard = gdk_display_get_clipboard (Display);
+
+	TextView = (GtkTextView *) data;
+	const gchar *text = get_text (TextView);
+
+	gdk_clipboard_set_text (GDK_CLIPBOARD (Clipboard), text);
+}
+
+void 
+event_translate (GtkWidget *Widget, gpointer data) {
+	GtkTextView **TextWidgets = (GtkTextView **) data;
+
+	GtkTextView *TextIn = TextWidgets[0];
+	GtkTextView *TextOut = TextWidgets[1];
+
+	const gchar *text_src = get_text (TextIn);
+
 	gchar *text_translated = g_new (gchar, strlen (text_src) * 5 + 1);
-	translate_to_code (text_src, text_translated);
+
+	text_translate (text_src, text_translated);
+
 	GtkTextBuffer *Buffer_out = gtk_text_view_get_buffer (GTK_TEXT_VIEW(TextOut));
+
 	gtk_text_buffer_set_text (Buffer_out, text_translated, strlen (text_translated));
 	gtk_text_view_set_buffer (TextOut, Buffer_out);
 }
 
 void 
 activate_application (GtkApplication* app, gpointer user_data) {
+/*--------------------------OBJECTS-----------------------------------------------------*/
+	// GError *Error;
 	GtkWidget *Window;
-	GtkWidget *ButtonRead, *ButtonCopy;
-	GtkWidget *Box, *BoxButton;
 	GtkWidget *TextIn, *TextOut;
 	GtkWidget *ScrollTextIn, *ScrollTextOut;
+	GtkWidget *ButtonRead, *ButtonCopy;
+	GtkWidget *Box, *BoxButton;
+	
 	GtkTextView **TextWidgets = g_new (GtkTextView*, 2);
 /*--------------------------WINDOW------------------------------------------------------*/
 	Window = gtk_application_window_new (app);
 	gtk_window_set_title (GTK_WINDOW (Window), "Telegraf");
+
 	gtk_window_set_default_size (GTK_WINDOW (Window), 350, 400);
 	gtk_window_set_resizable (GTK_WINDOW (Window), FALSE);
 /*--------------------------TEXTS-------------------------------------------------------*/
 	TextIn = gtk_text_view_new ();
 	TextOut = gtk_text_view_new ();
+
+	gtk_text_view_set_editable (GTK_TEXT_VIEW (TextOut), FALSE);
 
 	gtk_widget_set_margin_bottom (TextIn, 5);
 	gtk_widget_set_margin_bottom (TextOut, 5);
@@ -77,7 +114,6 @@ activate_application (GtkApplication* app, gpointer user_data) {
 
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(ScrollTextIn), TextIn);
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(ScrollTextOut), TextOut);
-
 /*--------------------------BUTTON------------------------------------------------------*/
 	ButtonCopy = gtk_button_new_with_label ("Copy");
 	ButtonRead = gtk_button_new_with_label ("Read");
@@ -88,7 +124,8 @@ activate_application (GtkApplication* app, gpointer user_data) {
 	gtk_widget_set_size_request(ButtonCopy, 120, 30);
 	gtk_widget_set_size_request(ButtonRead, 120, 30);
 
-	g_signal_connect (ButtonRead, "clicked", G_CALLBACK(translate_text), TextWidgets);
+	g_signal_connect (ButtonRead, "clicked", G_CALLBACK (event_translate), TextWidgets);
+	g_signal_connect (ButtonCopy, "clicked", G_CALLBACK (event_copy), TextOut);
 /*--------------------------BOX-WITH-BUTTON---------------------------------------------*/
 	BoxButton = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 
