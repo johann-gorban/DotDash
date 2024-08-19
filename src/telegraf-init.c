@@ -1,6 +1,5 @@
 #include "telegraf-init.h"
 #include "telegraf-alphabet.h"
-#include "telegraf-css.h"
 
 void 
 text_translate (const gchar *str1, gchar *str2){
@@ -18,6 +17,19 @@ text_translate (const gchar *str1, gchar *str2){
 		} else strcat (str2, "?");
 		strcat (str2, " "); 
 	}
+}
+
+void
+load_css (void){
+	GtkCssProvider *Provider;
+
+	Provider = gtk_css_provider_new ();
+	gtk_css_provider_load_from_string (Provider, 
+					   ".WidgetRounded textview {border-radius: 10px;}");
+
+	gtk_style_context_add_provider_for_display (gdk_display_get_default(), 
+						    GTK_STYLE_PROVIDER(Provider),
+						    GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 }
 
 const gchar*

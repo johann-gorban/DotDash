@@ -7,6 +7,7 @@
 const gchar     *get_text               (GtkTextView *);
 
 void	        text_translate          (const gchar *, gchar *);
+void            load_css                (void);
 
 void	        event_translate         (GtkWidget *, gpointer);
 void            event_copy              (GtkWidget *, gpointer);
