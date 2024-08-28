@@ -1,4 +1,4 @@
-#include "telegraf-alphabet.h"
+#include "alphabet.h"
 
 const gchar *MORSE_LETTERS[] = {
 	".-",       /*A*/

@@ -1,5 +1,5 @@
-#ifndef TELEGRAF_CONSTANTS_H
-#define TELEGRAF_CONSTANTS_H
+#ifndef DOTDASH_CONSTANTS_H
+#define DOTDASH_CONSTANTS_H
 
 #include <gtk/gtk.h>
 

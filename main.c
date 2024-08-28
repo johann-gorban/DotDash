@@ -1,7 +1,7 @@
 #include <gtk/gtk.h>
-#include "telegraf-init.h"
+#include "activation.h"
 
-#define APPLICATION_ID "org.gnome.Telegraf.Devel"
+#define APPLICATION_ID "gnome.DotDash"
 
 gint main(gint argc, gchar **argv) {
 	GtkApplication *app;

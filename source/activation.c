@@ -1,23 +1,5 @@
-#include "telegraf-init.h"
-#include "telegraf-alphabet.h"
-
-void 
-text_translate (const gchar *str1, gchar *str2){
-	const gsize length = strlen (str1);
-	str2[0] = '\0';
-	for (size_t i = 0; i < length; i++) {
-		if (str1[i] >= '0' && str1[i] <= '9'){
-			strcat (str2, MORSE_DIGITS[str1[i] - '9']);
-		} else if (str1[i] >= 'A' && str1[i] <= 'Z'){
-			strcat (str2, MORSE_LETTERS[str1[i] - 'A']);
-		} else if (str1[i] >= 'a' && str1[i] <= 'z'){
-			strcat (str2, MORSE_LETTERS[str1[i] - 'a']);
-		} else if (str1[i] == ' '){
-			strcat (str2, " ");
-		} else strcat (str2, "?");
-		strcat (str2, " "); 
-	}
-}
+#include "activation.h"
+#include "callbacks.h"
 
 void
 load_css (void){
@@ -30,53 +12,6 @@ load_css (void){
 	gtk_style_context_add_provider_for_display (gdk_display_get_default(), 
 						    GTK_STYLE_PROVIDER(Provider),
 						    GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-}
-
-const gchar*
-get_text (GtkTextView *TextWidget){
-	GtkTextBuffer *Buffer = gtk_text_view_get_buffer (TextWidget);
-
-	GtkTextIter start, end;
-	gtk_text_buffer_get_bounds (Buffer, &start, &end);
-
-	const gchar *text = gtk_text_buffer_get_text (Buffer, &start, &end, FALSE);
-	
-	return text;
-}
-
-void
-event_copy (GtkWidget *Widget, gpointer data) {
-	GdkDisplay *Display;
-	GdkClipboard *Clipboard;
-	GtkTextView *TextView;
-
-	Display = gdk_display_get_default ();
-
-	Clipboard = gdk_display_get_clipboard (Display);
-
-	TextView = (GtkTextView *) data;
-	const gchar *text = get_text (TextView);
-
-	gdk_clipboard_set_text (GDK_CLIPBOARD (Clipboard), text);
-}
-
-void 
-event_translate (GtkWidget *Widget, gpointer data) {
-	GtkTextView **TextWidgets = (GtkTextView **) data;
-
-	GtkTextView *TextIn = TextWidgets[0];
-	GtkTextView *TextOut = TextWidgets[1];
-
-	const gchar *text_src = get_text (TextIn);
-
-	gchar *text_translated = g_new (gchar, strlen (text_src) * 5 + 1);
-
-	text_translate (text_src, text_translated);
-
-	GtkTextBuffer *Buffer_out = gtk_text_view_get_buffer (GTK_TEXT_VIEW(TextOut));
-
-	gtk_text_buffer_set_text (Buffer_out, text_translated, strlen (text_translated));
-	gtk_text_view_set_buffer (TextOut, Buffer_out);
 }
 
 void 
@@ -92,7 +27,7 @@ activate_application (GtkApplication* app, gpointer user_data) {
 	GtkTextView **TextWidgets = g_new (GtkTextView*, 2);
 /*--------------------------WINDOW------------------------------------------------------*/
 	Window = gtk_application_window_new (app);
-	gtk_window_set_title (GTK_WINDOW (Window), "Telegraf");
+	gtk_window_set_title (GTK_WINDOW (Window), "DotDash");
 
 	gtk_window_set_default_size (GTK_WINDOW (Window), 350, 400);
 	gtk_window_set_resizable (GTK_WINDOW (Window), FALSE);
@@ -136,8 +71,8 @@ activate_application (GtkApplication* app, gpointer user_data) {
 	gtk_widget_set_size_request(ButtonCopy, 120, 30);
 	gtk_widget_set_size_request(ButtonRead, 120, 30);
 
-	g_signal_connect (ButtonRead, "clicked", G_CALLBACK (event_translate), TextWidgets);
-	g_signal_connect (ButtonCopy, "clicked", G_CALLBACK (event_copy), TextOut);
+	g_signal_connect (ButtonRead, "clicked", G_CALLBACK (callback_translate), TextWidgets);
+	g_signal_connect (ButtonCopy, "clicked", G_CALLBACK (callback_copy), TextOut);
 /*--------------------------BOX-WITH-BUTTON---------------------------------------------*/
 	BoxButton = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 
