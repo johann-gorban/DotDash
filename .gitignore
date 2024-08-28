@@ -1,0 +1,13 @@
+
+# Ignore all by default
+*
+
+!/include
+!/include/**
+
+!/source
+!/source/**
+
+!meson.build
+
+!.gitignore
