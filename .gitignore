@@ -2,12 +2,15 @@
 # Ignore all by default
 *
 
+# But include dirs
 !/include
 !/include/**
 
+# But source dirs
 !/source
 !/source/**
 
+# But other things
 !meson.build
-
+!README.md
 !.gitignore
